@@ -17,6 +17,16 @@ __license__ = "BSD-2-Clause"
 import datetime
 
 
+def timestamp() -> str:
+    return datetime.datetime.now(datetime.timezone.utc).isoformat()
+
+
+def timestamp_file() -> str:
+    stamp = timestamp()
+    file_stamp = stamp.replace(':', '-').replace('+', 'Z-')
+    return file_stamp
+
+
 def third_friday(year: int, month: int):
     """
     third_friday(year: int, month: int) -> str
