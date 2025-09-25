@@ -28,7 +28,7 @@ This project is licensed under the BSD 2-Clause License.
 
 ### Core Modules
 * **`mdatetime`**: Utilities for advanced date and time manipulation.  
-* **`ga`**: Genetic Algorithm.  
+* **`ga`**: Genetic Algorithm with verbose methods reporting in detail each step and operation.  
 
 ---
 ### Related Projects

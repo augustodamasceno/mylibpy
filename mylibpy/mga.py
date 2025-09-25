@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-  Mylibpy Datetime
+  Mylibpy Genetic Algorithm
 
   Copyright (c) 2025, Augusto Damasceno.
   All rights reserved.
@@ -26,6 +26,7 @@ class GA:
         self.population_size = 32
         self.crossover_rate = 0.75
         self.mutation_rate = 0.01
+        self.mutation_type = 'uniform'
         self.genetic_stall = 5
         self.max_generations = 20
         self.num_dimensions = 1
@@ -68,14 +69,13 @@ class GA:
 
     def init_population(self):
         self.set_codification()
-
         if self.num_dimensions == 1:
-            self.pop = np.random.randint(0, 2, (self.population_size,
-                                                self.num_digits))
+            self.pop =  pop = np.random.randint(0, 2, (self.population_size,
+                                                                      self.num_digits))
         else:
             self.pop = np.random.randint(0, 2, (self.population_size,
-                                                self.num_dimensions,
-                                                self.num_digits))
+                                                               self.num_dimensions,
+                                                               self.num_digits))
         self.fitness = np.zeros(self.population_size)
         self.generation = 0
 
@@ -153,16 +153,29 @@ class GA:
         return keep[0:num_keep]
 
     def crossover(self, selected):
-        if self.crossover_type == 'two':
+        if self.crossover_type == 'one':
             children = []
-            slice = int(np.floor(self.num_digits/3))
+            cut = int(np.floor(self.num_digits/2))
             for couple in selected:
                 father = self.pop[couple[0]]
                 mother = self.pop[couple[1]]
                 child_a = father
                 child_b = mother
-                child_a[slice:2*slice] = mother[slice:2*slice]
-                child_b[slice:2 * slice] = father[slice:2 * slice]
+                child_a[cut:] = mother[cut:]
+                child_b[cut:] = father[cut:]
+                children.append(child_a)
+                children.append(child_b)
+            return np.array(children)
+        elif self.crossover_type == 'two':
+            children = []
+            cut = int(np.floor(self.num_digits/3))
+            for couple in selected:
+                father = self.pop[couple[0]]
+                mother = self.pop[couple[1]]
+                child_a = father
+                child_b = mother
+                child_a[cut:2 * cut] = mother[cut:2 * cut]
+                child_b[cut:2 * cut] = father[cut:2 * cut]
                 children.append(child_a)
                 children.append(child_b)
             return np.array(children)
@@ -175,24 +188,42 @@ class GA:
             self.crossover_type = 'two'
             self.crossover(selected)
 
-    @staticmethod
-    def exponential_decay(val_min, val_max, period, index):
-        if val_min <= 0:
-            val_min = 0.1
-        tau =  period / np.log(val_max/val_min)
-        exp = -index / tau
-        value = val_max * np.exp(exp)
-        return value
+    def mutation_mask(self, size):
+        if self.num_dimensions == 1:
+            rnd = np.random.random((size, self.num_digits))
+        else:
+            rnd = np.random.random((size, self.num_dimensions, self.num_digits))
+        mask = rnd < self.mutation_rate
+        return mask
 
     def mutation(self, children):
-        for idx in range(children.shape[0]):
-            rnd = np.random.random()
-            if rnd < self.mutation_rate:
-                rnd_index = np.random.randint(int(1E9))
-                exponential = GA.exponential_decay(0.1, self.num_digits-1, 1E9, rnd_index)
-                mutate_gene = int(np.round(exponential))
-                children[idx][mutate_gene] = 1-children[idx][mutate_gene]
-        return children
+        if self.mutation_type == 'uniform':
+            mask = self.mutation_mask(children.shape[0])
+            locations = np.where(mask)
+            children_copy = children.copy()
+            children[mask] = 1 - children_copy[mask]
+
+            if self.verbose:
+                if len(locations[0]) == 0:
+                    print('No Mutations Happens')
+                else:
+                    print(f'Mutations')
+                    locations
+                    for chromosome_index in range(len(locations[0])):
+                        print(f'Children {locations[0][chromosome_index]} '
+                              + f'(genes {locations[1][chromosome_index]})\n'
+                              + f'{children_copy[locations[0][chromosome_index]]}\n'
+                              + '\/\n'
+                              + f'{children[locations[0][chromosome_index]]}')
+            return children
+        else:
+            warnings.warn(
+                (f"Unavailable mutation_type {self.mutation_type},"
+                 + " using default: uniform."),
+                UserWarning
+            )
+            self.mutation_type = 'uniform'
+            return self.mutation(children)
 
     def is_genetic_stall(self):
         return False
@@ -216,6 +247,7 @@ class GA:
             if self.verbose:
                 print(f'Generation {self.generation}')
 
+            print('Fitness')
             self.population_fitness()
             if self.verbose:
                 print(f'\tWorst Fitness {np.min(self.fitness)}\n'
@@ -223,7 +255,9 @@ class GA:
 
             selected = self.selection()
             if self.verbose:
-                print(f'\tSelected {selected}')
+                print(f'\tSelected: ')
+                for couple in selected:
+                    print(f'\t\tParents {couple[0]} and {couple[1]}')
 
             children = self.crossover(selected)
             children = self.mutation(children)
@@ -254,12 +288,14 @@ class GA:
 if __name__ == "__main__":
     ga = GA(population_size=10,
             max_generations=20,
-            crossover_rate=0.75,
+            crossover_rate=0.85,
             crossover_type='two',
             selection_type='roulette',
+            mutation_type='uniform',
             mutation_rate=0.01,
             range_low=-10,
             range_high=10,
+            decimal_places=6,
             verbose=True)
     print(f'Running GA Example with config\n{ga}')
     ga.run(fitness_func=lambda x: -x*x + 3*x - 4)

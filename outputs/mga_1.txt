@@ -1,0 +1,382 @@
+Running GA Example with config
+verbose: True
+population_size: 10
+crossover_rate: 0.75
+mutation_rate: 0.01
+mutation_type: uniform
+genetic_stall: 5
+max_generations: 20
+num_dimensions: 1
+bits_per_decimal_place: 3.3
+range_low: -10
+range_high: 10
+range_interval: 20
+decimal_places: 6
+num_digits: 32
+bin_max_val: 4294967295
+selection_type: roulette
+crossover_type: two
+pop: None
+best_fitness: -inf
+generation: 0
+Generation 0
+Fitness
+	Worst Fitness -105.63673944811819
+	Best Fitness -2.154418116225333
+	Selected:
+		Parents 0 and 6
+		Parents 6 and 1
+		Parents 4 and 5
+		Parents 2 and 9
+Mutations
+Children 7 (genes 5)
+[0 1 0 0 1 1 0 1 1 1 0 0 0 0 0 1 1 0 0 1 1 0 0 1 0]
+\/
+[0 1 0 0 1 0 0 1 1 1 0 0 0 0 0 1 1 0 0 1 1 0 0 1 0]
+Generation 1
+Fitness
+	Worst Fitness -105.63673944811819
+	Best Fitness -2.154418116225333
+	Selected:
+		Parents 5 and 2
+		Parents 0 and 5
+		Parents 5 and 7
+		Parents 0 and 5
+		Parents 8 and 0
+Mutations
+Children 0 (genes 2)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+Children 1 (genes 13)
+[1 0 1 0 1 0 1 1 0 0 1 1 0 1 0 1 0 1 1 0 1 0 1 0 1]
+\/
+[1 0 1 0 1 0 1 1 0 0 1 1 0 0 0 1 0 1 1 0 1 0 1 0 1]
+Children 7 (genes 0)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[0 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+Generation 2
+Fitness
+	Worst Fitness -88.83086558413979
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 5 and 0
+		Parents 9 and 3
+		Parents 3 and 4
+Mutations
+Children 1 (genes 17)
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Generation 3
+Fitness
+	Worst Fitness -88.83086558413979
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 4 and 8
+		Parents 9 and 0
+		Parents 8 and 0
+		Parents 8 and 1
+		Parents 1 and 0
+No Mutations Happens
+Generation 4
+Fitness
+	Worst Fitness -34.67227438954641
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 7 and 0
+		Parents 6 and 1
+		Parents 8 and 2
+		Parents 2 and 7
+Mutations
+Children 0 (genes 24)
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 1]
+Children 6 (genes 21)
+[1 0 1 0 1 0 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 0 1 0 1]
+\/
+[1 0 1 0 1 0 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 1 1 0 1]
+Children 7 (genes 13)
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 1 0 1 1 1 1 0 0 0 1 0 1 0 1 0 0 1 0 1 1 0]
+Generation 5
+Fitness
+	Worst Fitness -34.67227438954641
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 4 and 8
+		Parents 0 and 1
+		Parents 3 and 8
+		Parents 7 and 0
+Mutations
+Children 0 (genes 5)
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 1 1 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Children 1 (genes 3)
+[1 0 1 0 0 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 0 1 0]
+\/
+[1 0 1 1 0 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 0 1 0]
+Generation 6
+Fitness
+	Worst Fitness -34.67227438954641
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 3 and 5
+		Parents 9 and 4
+		Parents 6 and 7
+Mutations
+Children 0 (genes 15)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+Children 4 (genes 2)
+[1 0 1 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Generation 7
+Fitness
+	Worst Fitness -34.67227438954641
+	Best Fitness -2.196200253792316
+	Selected:
+		Parents 4 and 3
+		Parents 4 and 8
+		Parents 0 and 1
+		Parents 2 and 7
+Mutations
+Children 6 (genes 6)
+[1 0 1 0 1 0 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 0 1 0 1]
+\/
+[1 0 1 0 1 0 0 1 1 1 0 0 0 0 0 1 0 1 1 0 1 0 1 0 1]
+Generation 8
+Fitness
+	Worst Fitness -13.86641264943662
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 5 and 0
+		Parents 2 and 4
+		Parents 1 and 2
+		Parents 4 and 2
+		Parents 2 and 4
+Mutations
+Children 4 (genes 5)
+[1 0 1 0 0 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 0 1 0]
+\/
+[1 0 1 0 0 0 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 1 0 1 0]
+Children 4 (genes 19)
+[1 0 1 0 0 1 1 1 1 1 0 0 0 0 0 1 0 1 1 1 1 1 0 1 0]
+\/
+[1 0 1 0 0 0 1 1 1 1 0 0 0 0 0 1 0 1 1 0 1 1 0 1 0]
+Children 7 (genes 16)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 1 1 0 0 1 0 1 1 0]
+Generation 9
+Fitness
+	Worst Fitness -4.328989735350813
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 1 and 9
+		Parents 8 and 7
+		Parents 3 and 8
+		Parents 1 and 3
+		Parents 1 and 9
+Mutations
+Children 3 (genes 24)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 1 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 1 1 0 0 1 0 1 1 1]
+Children 9 (genes 8)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+Children 9 (genes 15)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 0 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+Generation 10
+Fitness
+	Worst Fitness -2.1969148179565403
+	Best Fitness -2.1455400198548746
+	Selected:
+		Parents 6 and 4
+		Parents 1 and 5
+		Parents 0 and 5
+		Parents 6 and 4
+		Parents 9 and 7
+Mutations
+Children 0 (genes 15)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+Children 2 (genes 21)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0]
+Children 3 (genes 17)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0]
+Children 3 (genes 21)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0]
+Generation 11
+Fitness
+	Worst Fitness -2.196710029320604
+	Best Fitness -2.1963021856149076
+	Selected:
+		Parents 8 and 6
+		Parents 0 and 3
+		Parents 1 and 8
+		Parents 7 and 8
+Mutations
+Children 3 (genes 9)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 0 0 0 0 0 0 1 0 0 0 0 1 1 1 1 0]
+Children 4 (genes 10)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 1 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+Generation 12
+Fitness
+	Worst Fitness -2.2097559070676986
+	Best Fitness -2.170890730327903
+	Selected:
+		Parents 2 and 8
+		Parents 1 and 4
+No Mutations Happens
+Generation 13
+Fitness
+	Worst Fitness -2.2098593755726306
+	Best Fitness -2.170890730327903
+	Selected:
+		Parents 8 and 5
+		Parents 1 and 9
+		Parents 1 and 3
+		Parents 4 and 9
+		Parents 5 and 7
+Mutations
+Children 2 (genes 19)
+[1 0 0 1 1 0 1 1 1 1 1 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 1 0 0 0 0 1 0 1 0 1 1 0 1 1 0]
+Children 9 (genes 5)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 1 1 1 1 1 0 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Generation 14
+Fitness
+	Worst Fitness -2.7120936072118083
+	Best Fitness -2.1966080509318813
+	Selected:
+		Parents 5 and 4
+		Parents 6 and 4
+		Parents 1 and 8
+		Parents 0 and 7
+		Parents 0 and 2
+Mutations
+Children 3 (genes 3)
+[1 0 0 1 1 0 1 1 1 1 1 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 0 1 0 1 1 1 1 1 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Children 4 (genes 8)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 0 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+Children 5 (genes 5)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 1 1 1 1 1 0 0 0 0 0 1 0 0 0 1 1 0 1 1 0]
+Children 5 (genes 19)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 1 1 1 1 1 0 0 0 0 0 1 0 0 0 1 1 0 1 1 0]
+Children 7 (genes 15)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 1 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+Generation 15
+Fitness
+	Worst Fitness -2.711981359539876
+	Best Fitness -2.077036116467947
+	Selected:
+		Parents 8 and 5
+		Parents 1 and 2
+		Parents 6 and 7
+		Parents 9 and 2
+No Mutations Happens
+Generation 16
+Fitness
+	Worst Fitness -2.711981359539876
+	Best Fitness -2.077036116467947
+	Selected:
+		Parents 0 and 5
+		Parents 2 and 4
+		Parents 3 and 4
+		Parents 3 and 7
+Mutations
+Children 0 (genes 16)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 1 1 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 1 0 0 0 1 1 1 1 0]
+Children 1 (genes 6)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 0 1 1 1 0 0 0 0 0 0 0 0 0 0 1 0 1 1 0]
+Children 2 (genes 4)
+[1 0 0 1 1 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+Generation 17
+Fitness
+	Worst Fitness -2.711981359539876
+	Best Fitness -1.7518540345063962
+	Selected:
+		Parents 2 and 8
+		Parents 4 and 2
+		Parents 2 and 3
+		Parents 9 and 7
+		Parents 7 and 8
+No Mutations Happens
+Generation 18
+Fitness
+	Worst Fitness -2.711981359539876
+	Best Fitness -1.7518540345063962
+	Selected:
+		Parents 3 and 0
+		Parents 0 and 6
+		Parents 1 and 4
+Mutations
+Children 1 (genes 6)
+[1 0 0 1 0 0 1 1 1 1 1 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 0 0 0 1 1 1 1 0 0 0 0 1 0 1 0 0 1 0 1 1 0]
+Children 3 (genes 11)
+[1 0 0 1 1 0 1 1 1 1 1 0 0 0 0 1 0 1 0 1 1 0 1 1 0]
+\/
+[1 0 0 1 1 0 1 1 1 1 1 1 0 0 0 1 0 1 0 1 1 0 1 1 0]
+Generation 19
+Fitness
+	Worst Fitness -2.711981359539876
+	Best Fitness -1.7518540345063962
+	Selected:
+		Parents 1 and 0
+		Parents 7 and 1
+		Parents 9 and 5
+		Parents 1 and 4
+Mutations
+Children 3 (genes 2)
+[1 0 0 1 0 0 0 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 1 1 0 0 0 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+Children 5 (genes 20)
+[1 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 1 0 1 1 0]
+\/
+[1 0 0 1 0 0 1 1 1 1 0 0 0 0 0 0 0 1 0 0 0 0 1 1 0]
+Best Solution: 1.5430585009771143
+Best Fitness: -1.7518540345063962
