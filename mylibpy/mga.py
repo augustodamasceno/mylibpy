@@ -14,6 +14,7 @@ __copyright__ = "Copyright (c) 2025, Augusto Damasceno."
 __license__ = "BSD-2-Clause"
 
 
+import time
 import inspect
 import warnings
 import random
@@ -97,8 +98,9 @@ class GA:
         min_val = np.min(self.fitness)
         max_val = np.max(self.fitness)
         max_val_idx = np.argmax(self.fitness)
-        self.best_fitness = max_val
-        self.best_solution = self.pop[max_val_idx]
+        if max_val > self.best_fitness:
+            self.best_fitness = max_val
+            self.best_solution = self.pop[max_val_idx]
         if min_val < 0:
             self.fitness += np.abs(min_val)+1
         fitness_sum = np.sum(self.fitness)
@@ -239,6 +241,9 @@ class GA:
         else:
             raise ValueError("fitness_func must be a function.")
 
+        self.best_solution = None
+        self.best_fitness = -np.inf
+
         # Create Initial Population
         self.init_population()
 
@@ -247,9 +252,9 @@ class GA:
             if self.verbose:
                 print(f'Generation {self.generation}')
 
-            print('Fitness')
             self.population_fitness()
             if self.verbose:
+                print('Fitness')
                 print(f'\tWorst Fitness {np.min(self.fitness)}\n'
                       + f'\tBest Fitness {np.max(self.fitness)}')
 
@@ -296,7 +301,19 @@ if __name__ == "__main__":
             range_low=-10,
             range_high=10,
             decimal_places=6,
-            verbose=True)
-    print(f'Running GA Example with config\n{ga}')
-    ga.run(fitness_func=lambda x: -x*x + 3*x - 4)
-    print(f'Best Solution: {ga.decode(ga.best_solution)}\nBest Fitness: {ga.best_fitness}')
+            verbose=False)
+    print(f'Running GA Example with config\n{ga} 50 times, verbose first one')
+    best_solution = None
+    best_fitness = -np.inf
+    start_time = time.perf_counter()
+    for i in range(50):
+        ga.verbose = i == 0
+        ga.run(fitness_func=lambda x: -x*x + 3*x - 4)
+        if best_fitness < ga.best_fitness:
+            best_fitness = ga.best_fitness
+            best_solution = ga.best_solution
+    end_time = time.perf_counter()
+
+    print(f'Best Solution in 50 executions: {ga.decode(best_solution)}\nBest Fitness: {best_fitness}')
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time for 50 executions: {elapsed_time:.4f} seconds")
