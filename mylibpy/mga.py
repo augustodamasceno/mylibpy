@@ -18,9 +18,13 @@ import time
 import inspect
 import warnings
 import random
+import os
+from pathlib import Path
 
+import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
+
 
 class GA:
     def __init__(self, **kwargs):
@@ -28,16 +32,16 @@ class GA:
         self.population_size = 10
         self.crossover_rate = 0.75
         self.mutation_rate = 0.01
+        self.mutation_rate_start = 0.09
+        self.mutation_rate_end = 0.01
         self.mutation_type = 'uniform'
         self.genetic_stall = 5
         self.max_generations = 20
         self.num_dimensions = 1
-        self.bits_per_decimal_place = 3.3
         self.range_low = -10
         self.range_high = 10
         self.range_interval = 20
-        self.decimal_places = 4
-        self.num_digits = 32
+        self.num_digits = 19
         self.bin_max_val = 4294967295
         self.selection_type = 'roulette'
         self.crossover_type = 'two'
@@ -52,6 +56,8 @@ class GA:
         self.fitness_func = None
         self.generation = 0
         self.fitness_func_counter = 0
+        self.save_plots = False
+        self.output_dir = "."
         for key, value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
@@ -61,20 +67,14 @@ class GA:
             raise ValueError('range_high must be higher than range_low')
 
         self.range_interval = np.abs(self.range_high - self.range_low)
-        integer_places = np.ceil(np.log2(self.range_interval))
-        self.num_digits = int(
-            np.ceil(
-                integer_places
-                + self.decimal_places
-                * self.bits_per_decimal_place
-            )
-        )
         self.bin_max_val =  2 ** self.num_digits - 1
 
     def init(self):
         self.set_codification()
         self.generation = -1
         self.fitness_func_counter = 0
+        if self.mutation_type == 'non-uniform':
+            self.mutation_rate = self.mutation_rate_start
         if self.genetic_stall < 2:
             warnings.warn(
                 (f"Invalid genetic stall {self.genetic_stall},"
@@ -141,11 +141,11 @@ class GA:
                    or (mother, father) in selected
                    or father in parents
                    or mother in parents
-            ) and attempts < 10:
+            ) and attempts < 30:
                 father = GA.spin_wheel(slices_end)
                 mother = GA.spin_wheel(slices_end)
                 attempts += 1
-            if attempts < 10:
+            if attempts < 30:
                 selected.append((father, mother))
                 parents.add(father)
                 parents.add(mother)
@@ -268,7 +268,11 @@ class GA:
     def mutation(self, children):
         if len(children) == 0:
             return children
-        if self.mutation_type == 'uniform':
+        if self.mutation_type in ['uniform', 'non-uniform']:
+            if self.mutation_type == 'non-uniform':
+                self.mutation_rate -= (self.mutation_rate_start - self.mutation_rate_end)/(self.max_generations+1)
+                if self.verbose:
+                    print(f'Mutation Rate = {self.mutation_rate}')
             mask = self.mutation_mask(children.shape[0])
             locations = np.where(mask)
             children_copy = children.copy()
@@ -308,6 +312,38 @@ class GA:
         return (self.generation == self.max_generations
                 or self.is_genetic_stall())
 
+    def save_generation_plot(self):
+        if self.save_plots:
+            Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+            decoded_pop = np.array([self.decode(ind) for ind in self.pop])
+            fig, ax = plt.subplots(figsize=(10, 12))
+            if self.num_dimensions == 1:
+                fitness_values = np.array([self.fitness_func(val) for val in decoded_pop])
+                ax.scatter(decoded_pop, fitness_values, c='red', s=50, alpha=0.6, label='Population')
+                x_range = np.linspace(self.range_low, self.range_high, 500)
+                y_range = np.array([self.fitness_func(x) for x in x_range])
+                ax.plot(x_range, y_range, 'b-', linewidth=2, label='Fitness Function')
+                ax.set_xlabel('X')
+                ax.set_ylabel('Fitness')
+            elif self.num_dimensions == 2:
+                # For 2D, scatter plot the population in x-y space
+                ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
+                ax.set_xlabel('X')
+                ax.set_ylabel('Y')
+            else:
+                ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
+                ax.set_xlabel('Dimension 1')
+                ax.set_ylabel('Dimension 2')
+
+            ax.set_title(f'Generation {self.generation} - Best Fitness: {self.best_fitness:.4f}')
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            filename = f'{self.output_dir}generation_{self.generation:04d}.png'
+            plt.tight_layout()
+            plt.savefig(filename, dpi=150)
+            plt.close()
+
+
     def run(self, fitness_func):
         if inspect.isfunction(fitness_func):
             self.fitness_func = fitness_func
@@ -327,7 +363,9 @@ class GA:
 
             self.population_fitness()
             self.best_fitness_history.append(self.best_fitness)
+            
             if self.verbose:
+                self.save_generation_plot()
                 print('Fitness')
                 for fit in self.fitness:
                     print(f'\t{fit}')
@@ -359,7 +397,7 @@ class GA:
             print(f'Fitness History:\n{[ float(x) for x in self.best_fitness_history]}\n'
                   + f'End at generation {self.generation-1}\n'
                   + f'End Population {len(self.pop)}\n'
-                  + f"Elapsed time: {elapsed_time:.4f} seconds"
+                  + f"Elapsed time: {elapsed_time:.4f} seconds\n"
                   + f"Fitness Function Calls: {self.fitness_func_counter}"
                   )
 
@@ -378,18 +416,23 @@ class GA:
 
 if __name__ == "__main__":
     ga = GA(population_size=10,
-                max_generations=20,
-                crossover_rate=0.85,
-                elit=2,
-                genetic_stall=20,
-                crossover_type='two',
-                selection_type='roulette',
-                mutation_type='uniform',
-                mutation_rate=0.1,
-                range_low=-10,
-                range_high=10,
-                decimal_places=6,
-                verbose=True)
+            max_generations=20,
+            crossover_rate=0.85,
+            elit=2,
+            num_dimensions=1,
+            genetic_stall=20,
+            crossover_type='two',
+            selection_type='roulette',
+            mutation_type='non-uniform',
+            mutation_rate=0.08,
+            mutation_rate_start = 0.01,
+            mutation_rate_end = 0.1,
+            range_low=-10,
+            range_high=10,
+            num_digits=19,
+            verbose=True,
+            save_plots=False,
+            output_dir="../outputs/ga-plots/")
     print(f'Running GA Example with config\n{ga}\n')
 
     ga.run(fitness_func=lambda x: -x*x + 3*x - 4)

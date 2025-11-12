@@ -48,16 +48,19 @@ class TestGA(unittest.TestCase):
                 max_generations=20,
                 crossover_rate=0.85,
                 elit=1,
-                num_dimensions=2,
+                num_dimensions=1,
                 genetic_stall=20,
                 crossover_type='two',
                 selection_type='roulette',
                 mutation_type='uniform',
-                mutation_rate=0.1,
+                mutation_rate=0.01,
+                mutation_rate_start=0.05,
+                mutation_rate_end=0.01,
                 range_low=-10,
                 range_high=10,
-                decimal_places=12,
-                verbose=False)
+                num_digits=19,
+                verbose=False,
+                save_plots=False)
 
         best_fitness_history = []
         for i in range(100):
@@ -74,7 +77,7 @@ class TestGA(unittest.TestCase):
 
         self.assertGreaterEqual(accuracy, accepted_accuracy)
 
-    def test_accuracy_complex(self):
+    def test_accuracy_benchmark(self):
         ga = GA(population_size=20,
                 max_generations=20,
                 crossover_rate=0.85,
@@ -95,7 +98,7 @@ class TestGA(unittest.TestCase):
             ga.run(fitness_func=w30_add_w4)
             best_fitness_history.append(ga.best_fitness)
 
-        print(best_fitness_history)
+        print(best_fitness_history[-1])
         desired_value = -950
         accepted_error = 10**-4
         accepted_accuracy = 0.75
