@@ -27,8 +27,12 @@ This project is licensed under the BSD 2-Clause License.
 ---
 
 ### Core Modules
-* **`mdatetime`**: Utilities for advanced date and time manipulation.  
-* **`ga`**: Genetic Algorithm with verbose methods reporting in detail each step and operation.  
+* **`mbenchmark`**: Benchmark Functions for Optimization Tests.  
+* **`mdatetime`**: Utilities for advanced date and time manipulation.   
+* **`mga`**: Genetic Algorithm with verbose methods reporting in detail each step and operation.  
+
+---
+### [Outputs](outputs/README.md)
 
 ---
 ### Related Projects
@@ -41,3 +45,6 @@ This project is licensed under the BSD 2-Clause License.
 3.  [Python Downloads](https://www.python.org/downloads/)
 4.  [PyCharm Community Edition](https://www.jetbrains.com/pycharm/download/)
 5.  [Python Datetime Library Docs](https://docs.python.org/3/library/datetime.html)
+6.  [NumPy Documentation](https://numpy.org/doc/stable/)
+7.  [Matplotlib Documentation](https://matplotlib.org/stable/index.html)
+8.  [Plotly Python Documentation](https://plotly.com/python/)

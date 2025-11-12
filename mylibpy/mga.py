@@ -20,6 +20,7 @@ import warnings
 import random
 
 import numpy as np
+import plotly.graph_objects as go
 
 class GA:
     def __init__(self, **kwargs):
@@ -43,7 +44,6 @@ class GA:
         self.elit = 2
         self.pop = None
         self.fitness = None
-        self.next_pop = None
         self.best_solution = None
         self.best_fitness = -np.inf
         self.best_fitness_history = []
@@ -51,6 +51,7 @@ class GA:
         self.run_end_time = None
         self.fitness_func = None
         self.generation = 0
+        self.fitness_func_counter = 0
         for key, value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
@@ -60,7 +61,7 @@ class GA:
             raise ValueError('range_high must be higher than range_low')
 
         self.range_interval = np.abs(self.range_high - self.range_low)
-        integer_places = np.log2(self.range_interval)
+        integer_places = np.ceil(np.log2(self.range_interval))
         self.num_digits = int(
             np.ceil(
                 integer_places
@@ -73,6 +74,7 @@ class GA:
     def init(self):
         self.set_codification()
         self.generation = -1
+        self.fitness_func_counter = 0
         if self.genetic_stall < 2:
             warnings.warn(
                 (f"Invalid genetic stall {self.genetic_stall},"
@@ -118,17 +120,17 @@ class GA:
         if max_val > self.best_fitness:
             self.best_fitness = max_val
             self.best_solution = self.pop[max_val_idx].copy()
-        if min_val < 0:
-            self.fitness += np.abs(min_val)
-        fitness_sum = np.sum(self.fitness)
+
+        roulette_fitness = self.fitness + np.abs(min_val) if min_val < 0 else self.fitness
+        fitness_sum = np.sum(roulette_fitness)
         if fitness_sum == 0:
             slices = np.ones(self.population_size) / self.population_size
         else:
-            slices = self.fitness / fitness_sum
+            slices = roulette_fitness / fitness_sum
         slices_end = np.cumsum(slices)
 
         selected = []
-        num_couples = int(self.population_size / 2.0 * self.crossover_rate)
+        num_couples = int(self.population_size * self.crossover_rate) // 2
         parents = set()
         while len(selected) < num_couples:
             father = GA.spin_wheel(slices_end)
@@ -143,10 +145,12 @@ class GA:
                 father = GA.spin_wheel(slices_end)
                 mother = GA.spin_wheel(slices_end)
                 attempts += 1
-            if attempts <= 10:
+            if attempts < 10:
                 selected.append((father, mother))
                 parents.add(father)
                 parents.add(mother)
+            else:
+                break
         return selected
 
     @staticmethod
@@ -174,6 +178,7 @@ class GA:
         for index in range(self.population_size):
             decoded_value = self.decode(self.pop[index])
             self.fitness[index] = self.fitness_func(decoded_value)
+            self.fitness_func_counter += 1
 
     def  elit_index(self):
         idx = np.argpartition(self.fitness, -self.elit)[-self.elit:]
@@ -261,6 +266,8 @@ class GA:
         return mask
 
     def mutation(self, children):
+        if len(children) == 0:
+            return children
         if self.mutation_type == 'uniform':
             mask = self.mutation_mask(children.shape[0])
             locations = np.where(mask)
@@ -310,7 +317,7 @@ class GA:
         self.best_solution = None
         self.best_fitness = -np.inf
         self.init()
-
+        self.run_start_time = time.perf_counter()
         while not self.is_stop_criteria_reached():
             self.generation += 1
             if self.verbose:
@@ -346,11 +353,15 @@ class GA:
                 else:
                     new_pop = np.concatenate([children, new_elit])
                 self.pop = new_pop
-
+        self.run_end_time = time.perf_counter()
+        elapsed_time = self.run_end_time - self.run_start_time
         if self.verbose:
             print(f'Fitness History:\n{[ float(x) for x in self.best_fitness_history]}\n'
                   + f'End at generation {self.generation-1}\n'
-                  + f'End Population {len(self.pop)}')
+                  + f'End Population {len(self.pop)}\n'
+                  + f"Elapsed time: {elapsed_time:.4f} seconds"
+                  + f"Fitness Function Calls: {self.fitness_func_counter}"
+                  )
 
     def __str__(self):
         lines = []
@@ -370,7 +381,7 @@ if __name__ == "__main__":
                 max_generations=20,
                 crossover_rate=0.85,
                 elit=2,
-                genetic_stall=5,
+                genetic_stall=20,
                 crossover_type='two',
                 selection_type='roulette',
                 mutation_type='uniform',
@@ -381,10 +392,6 @@ if __name__ == "__main__":
                 verbose=True)
     print(f'Running GA Example with config\n{ga}\n')
 
-    start_time = time.perf_counter()
     ga.run(fitness_func=lambda x: -x*x + 3*x - 4)
-    end_time = time.perf_counter()
-
     print(f'Best Solution: {ga.decode(ga.best_solution)}\nBest Fitness: {ga.best_fitness}')
-    elapsed_time = end_time - start_time
-    print(f"Elapsed time: {elapsed_time:.4f} seconds")
+

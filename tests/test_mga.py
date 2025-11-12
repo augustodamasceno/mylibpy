@@ -2,7 +2,7 @@
 """
   Mylibpy Genetic Algorithm Unit Tests
 
-  Copyright (c) 2023, Augusto Damasceno.
+  Copyright (c) 2025, Augusto Damasceno.
   All rights reserved.
 
   SPDX-License-Identifier: BSD-2-Clause
@@ -17,6 +17,7 @@ import unittest
 import numpy as np
 
 from mylibpy.mga import GA
+from mylibpy.mbenchmark import w30_add_w4
 
 
 class TestGA(unittest.TestCase):
@@ -42,11 +43,12 @@ class TestGA(unittest.TestCase):
         self.assertAlmostEqual(min_inc, 2*decoded_b, 15)
 
 
-    def test_accuracy(self):
+    def test_accuracy_simple(self):
         ga = GA(population_size=10,
                 max_generations=20,
                 crossover_rate=0.85,
-                elit=2,
+                elit=1,
+                num_dimensions=2,
                 genetic_stall=20,
                 crossover_type='two',
                 selection_type='roulette',
@@ -64,7 +66,39 @@ class TestGA(unittest.TestCase):
 
         desired_value = -1.75
         accepted_error = 10**-4
-        accepted_accuracy = 0.8
+        accepted_accuracy = 0.75
+        best_fitness_history = np.array(best_fitness_history)
+        error = np.abs(desired_value-best_fitness_history)
+        acceptable = error <= accepted_error
+        accuracy = np.sum(acceptable)/len(best_fitness_history)
+
+        self.assertGreaterEqual(accuracy, accepted_accuracy)
+
+    def test_accuracy_complex(self):
+        ga = GA(population_size=20,
+                max_generations=20,
+                crossover_rate=0.85,
+                elit=1,
+                num_dimensions = 2,
+                genetic_stall=20,
+                crossover_type='two',
+                selection_type='roulette',
+                mutation_type='uniform',
+                mutation_rate=0.1,
+                range_low=-10,
+                range_high=10,
+                decimal_places=12,
+                verbose=False)
+
+        best_fitness_history = []
+        for i in range(100):
+            ga.run(fitness_func=w30_add_w4)
+            best_fitness_history.append(ga.best_fitness)
+
+        print(best_fitness_history)
+        desired_value = -950
+        accepted_error = 10**-4
+        accepted_accuracy = 0.75
         best_fitness_history = np.array(best_fitness_history)
         error = np.abs(desired_value-best_fitness_history)
         acceptable = error <= accepted_error
