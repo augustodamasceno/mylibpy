@@ -85,6 +85,11 @@ x = x * 250
 y = y * 250
 
 
+def w30_add_w4_min(input):
+    result = w30_add_w4(input)
+    return -result
+
+
 def w30_add_w4(input):
     assert len(input) == 2, 'input must be bidimensional'
 

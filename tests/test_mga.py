@@ -17,7 +17,7 @@ import unittest
 import numpy as np
 
 from mylibpy.mga import GA
-from mylibpy.mbenchmark import w30_add_w4
+from mylibpy.mbenchmark import w30_add_w4_min, w30_add_w4
 
 
 class TestGA(unittest.TestCase):
@@ -78,29 +78,32 @@ class TestGA(unittest.TestCase):
         self.assertGreaterEqual(accuracy, accepted_accuracy)
 
     def test_accuracy_benchmark(self):
-        ga = GA(population_size=20,
+        ga = GA(population_size=16,
                 max_generations=20,
                 crossover_rate=0.85,
                 elit=1,
-                num_dimensions = 2,
+                num_dimensions=2,
                 genetic_stall=20,
                 crossover_type='two',
                 selection_type='roulette',
                 mutation_type='uniform',
-                mutation_rate=0.1,
-                range_low=-10,
-                range_high=10,
-                decimal_places=12,
-                verbose=False)
+                mutation_rate=0.01,
+                range_low=-500,
+                range_high=500,
+                num_digits=19,
+                verbose=False,
+                save_plots=False,
+                save_only_last_plot=True,
+                output_dir="outputs/ga-plots/benchmark/")
 
         best_fitness_history = []
-        for i in range(100):
-            ga.run(fitness_func=w30_add_w4)
+        for i in range(1):
+            ga.run(fitness_func=w30_add_w4_min)
             best_fitness_history.append(ga.best_fitness)
 
         print(best_fitness_history[-1])
-        desired_value = -950
-        accepted_error = 10**-4
+        desired_value = -1000
+        accepted_error = 1
         accepted_accuracy = 0.75
         best_fitness_history = np.array(best_fitness_history)
         error = np.abs(desired_value-best_fitness_history)

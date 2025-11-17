@@ -58,6 +58,7 @@ class GA:
         self.fitness_func_counter = 0
         self.save_plots = False
         self.output_dir = "."
+        self.save_only_last_plot = False
         for key, value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
@@ -313,28 +314,61 @@ class GA:
                 or self.is_genetic_stall())
 
     def save_generation_plot(self):
-        if self.save_plots:
-            Path(self.output_dir).mkdir(parents=True, exist_ok=True)
-            decoded_pop = np.array([self.decode(ind) for ind in self.pop])
+        Path(self.output_dir).mkdir(parents=True, exist_ok=True)
+        decoded_pop = np.array([self.decode(ind) for ind in self.pop])
+        
+        if self.num_dimensions == 1:
             fig, ax = plt.subplots(figsize=(10, 12))
-            if self.num_dimensions == 1:
-                fitness_values = np.array([self.fitness_func(val) for val in decoded_pop])
-                ax.scatter(decoded_pop, fitness_values, c='red', s=50, alpha=0.6, label='Population')
-                x_range = np.linspace(self.range_low, self.range_high, 500)
-                y_range = np.array([self.fitness_func(x) for x in x_range])
-                ax.plot(x_range, y_range, 'b-', linewidth=2, label='Fitness Function')
-                ax.set_xlabel('X')
-                ax.set_ylabel('Fitness')
-            elif self.num_dimensions == 2:
-                # For 2D, scatter plot the population in x-y space
-                ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
-                ax.set_xlabel('X')
-                ax.set_ylabel('Y')
-            else:
-                ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
-                ax.set_xlabel('Dimension 1')
-                ax.set_ylabel('Dimension 2')
-
+            fitness_values = np.array([self.fitness_func(val) for val in decoded_pop])
+            ax.scatter(decoded_pop, fitness_values, c='red', s=50, alpha=0.6, label='Population')
+            x_range = np.linspace(self.range_low, self.range_high, 500)
+            y_range = np.array([self.fitness_func(x) for x in x_range])
+            ax.plot(x_range, y_range, 'b-', linewidth=2, label='Fitness Function')
+            ax.set_xlabel('X')
+            ax.set_ylabel('Fitness')
+            ax.set_title(f'Generation {self.generation} - Best Fitness: {self.best_fitness:.4f}')
+            ax.legend()
+            ax.grid(True, alpha=0.3)
+            filename = f'{self.output_dir}generation_{self.generation:04d}.png'
+            plt.tight_layout()
+            plt.savefig(filename, dpi=150)
+            plt.close()
+        elif self.num_dimensions == 2:
+            # Create 3D plot for 2D problems
+            fig = plt.figure(figsize=(14, 14))
+            ax = fig.add_subplot(111, projection='3d')
+            ax.view_init(elev=15, azim=100)
+            
+            # Plot the fitness function surface
+            x_range = np.linspace(self.range_low, self.range_high, 50)
+            y_range = np.linspace(self.range_low, self.range_high, 50)
+            X, Y = np.meshgrid(x_range, y_range)
+            Z = np.zeros_like(X)
+            for i in range(X.shape[0]):
+                for j in range(X.shape[1]):
+                    Z[i, j] = self.fitness_func(np.array([X[i, j], Y[i, j]]))
+            
+            ax.plot_surface(X, Y, Z, cmap='plasma', alpha=0.6, edgecolor='none')
+            
+            # Plot the population points
+            fitness_values = np.array([self.fitness_func(val) for val in decoded_pop])
+            ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], fitness_values, 
+                      c='red', s=100, alpha=0.8, label='Population', edgecolors='black', linewidths=1)
+            
+            ax.set_xlabel('X')
+            ax.set_ylabel('Y')
+            ax.set_zlabel('Fitness')
+            ax.set_title(f'Generation {self.generation} - Best Fitness: {self.best_fitness:.4f}')
+            ax.legend()
+            filename = f'{self.output_dir}generation_{self.generation:04d}.png'
+            plt.tight_layout()
+            plt.savefig(filename, dpi=150)
+            plt.close()
+        else:
+            fig, ax = plt.subplots(figsize=(10, 12))
+            ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
+            ax.set_xlabel('Dimension 1')
+            ax.set_ylabel('Dimension 2')
             ax.set_title(f'Generation {self.generation} - Best Fitness: {self.best_fitness:.4f}')
             ax.legend()
             ax.grid(True, alpha=0.3)
@@ -363,9 +397,11 @@ class GA:
 
             self.population_fitness()
             self.best_fitness_history.append(self.best_fitness)
-            
-            if self.verbose:
+
+            if self.save_plots and not self.save_only_last_plot:
                 self.save_generation_plot()
+
+            if self.verbose:
                 print('Fitness')
                 for fit in self.fitness:
                     print(f'\t{fit}')
@@ -400,6 +436,9 @@ class GA:
                   + f"Elapsed time: {elapsed_time:.4f} seconds\n"
                   + f"Fitness Function Calls: {self.fitness_func_counter}"
                   )
+        if self.save_only_last_plot:
+            self.save_generation_plot()
+
 
     def __str__(self):
         lines = []
