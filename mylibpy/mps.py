@@ -79,10 +79,10 @@ class PS:
         self.personal_best = np.random.randint(self.range_low,
                                                self.range_high,
                                           (self.max_iterations, self.num_particles, self.num_dimensions))
-        self.personal_eval = np.zeros((self.max_iterations, self.num_particles))
-        self.global_eval = np.zeros(self.max_iterations)
-        self.global_best = np.zeros((self.max_iterations, self.num_dimensions))
-        self.velocity =  np.zeros((self.max_iterations, self.num_particles))
+        self.personal_eval = -np.inf * np.ones((self.max_iterations, self.num_particles))
+        self.global_eval = -np.inf * np.ones(self.max_iterations)
+        self.global_best = -np.inf * np.ones((self.max_iterations, self.num_dimensions))
+        self.velocity =  np.zeros((self.max_iterations, self.num_particles, self.num_dimensions))
 
     def update_velocity(self):
         current_inertia = self.inertia()
@@ -90,15 +90,21 @@ class PS:
         r2 = np.random.random()
         cognitive = self.cognitive_behaviour * r1 * (self.personal_best[self.iteration] - self.position[self.iteration])
         social = self.social_behaviour * r2 * (self.global_best[self.iteration] - self.position[self.iteration])
-        self.velocity = current_inertia * cognitive + social
+        self.velocity = current_inertia*self.velocity + cognitive + social
 
     def update_position(self):
-        self.position[self.iteration+1] = self.position[self.iteration] + self.velocity
+        self.position[self.iteration+1] = self.position[self.iteration] + self.velocity[self.iteration]
         self.position[self.iteration+1] = np.where(self.position[self.iteration+1]  > self.range_high, self.range_high, self.position[self.iteration+1] )
         self.position[self.iteration+1] = np.where(self.position[self.iteration+1]  < self.range_low, self.range_low, self.position[self.iteration+1] )
 
     def update_best(self):
-        max_global_eval = -np.inf if self.iteration == 0 else self.global_eval[self.iteration-1]
+        if self.iteration == 0:
+            max_global_eval = -np.inf
+            max_global_best = None
+        else:
+            max_global_eval = self.global_eval[self.iteration-1]
+            max_global_best = self.global_best[self.iteration-1]
+
         for particle in range(self.num_particles):
             particle_position = self.position[self.iteration, particle]
             particle_eval = self.func(particle_position)
@@ -112,7 +118,9 @@ class PS:
                     self.personal_best[self.iteration, particle] = self.personal_best[self.iteration-1, particle]
             if particle_eval > max_global_eval:
                 max_global_eval = particle_eval
+                max_global_best= particle_position
         self.global_eval[self.iteration] = max_global_eval
+        self.global_best[self.iteration] = max_global_best
 
 
     def save_iteration_plot(self):
@@ -148,7 +156,7 @@ class PS:
             
             ax.plot_surface(X, Y, Z, cmap='plasma', alpha=0.6, edgecolor='none')
 
-            ax.scatter(self.position[-1, :, 0], self.position[-1, :, 1] , self.personal_eval[-1],
+            ax.scatter(self.position[self.iteration, :, 0], self.position[self.iteration, :, 1] , self.personal_eval[self.iteration],
                       c='red', s=100, alpha=0.8, label='Particles', edgecolors='black', linewidths=1)
             
             ax.set_xlabel('X')
@@ -161,9 +169,9 @@ class PS:
             plt.savefig(filename, dpi=150)
             plt.close()
 
-            scatter_with_continuos_3d(self.position[-1, :, 0],
-                                      self.position[-1, :, 1],
-                                      self.personal_eval[-1],
+            scatter_with_continuos_3d(self.position[self.iteration, :, 0],
+                                      self.position[self.iteration, :, 1],
+                                      self.personal_eval[self.iteration],
                                       self.func,
                                       limits=(self.range_low, self.range_high),
                                       fun_name='W30 + W4',

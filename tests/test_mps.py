@@ -35,8 +35,8 @@ class TestPS(unittest.TestCase):
                 inertia_rate=0.4,
                 cognitive_behaviour=0.5,
                 social_behaviour=2,
-                save_plots=False,
-                save_only_last_plot=True,
+                save_plots=True,
+                save_only_last_plot=False,
                 output_dir="outputs/ps-plots/benchmark/")
 
         best_eval_history = []
