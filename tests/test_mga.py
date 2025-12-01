@@ -78,10 +78,10 @@ class TestGA(unittest.TestCase):
         self.assertGreaterEqual(accuracy, accepted_accuracy)
 
     def test_accuracy_benchmark(self):
-        ga = GA(population_size=16,
-                max_generations=20,
-                crossover_rate=0.85,
-                elit=1,
+        ga = GA(population_size=24,
+                max_generations=30,
+                crossover_rate=0.9,
+                elit=5,
                 num_dimensions=2,
                 genetic_stall=20,
                 crossover_type='two',
@@ -101,7 +101,7 @@ class TestGA(unittest.TestCase):
             ga.run(fitness_func=w30_add_w4_min)
             best_fitness_history.append(ga.best_fitness)
 
-        print(best_fitness_history[-1])
+        print(best_fitness_history)
         desired_value = -1000
         accepted_error = 1
         accepted_accuracy = 0.75

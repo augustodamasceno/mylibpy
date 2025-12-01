@@ -25,6 +25,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 import plotly.graph_objects as go
 
+try:
+    from mplot import scatter_with_continuos_3d
+except:
+    from .mplot import scatter_with_continuos_3d
+
 
 class GA:
     def __init__(self, **kwargs):
@@ -116,12 +121,6 @@ class GA:
 
     def roulette(self):
         min_val = np.min(self.fitness)
-        max_val = np.max(self.fitness)
-        max_val_idx = np.argmax(self.fitness)
-        if max_val > self.best_fitness:
-            self.best_fitness = max_val
-            self.best_solution = self.pop[max_val_idx].copy()
-
         roulette_fitness = self.fitness + np.abs(min_val) if min_val < 0 else self.fitness
         fitness_sum = np.sum(roulette_fitness)
         if fitness_sum == 0:
@@ -150,8 +149,6 @@ class GA:
                 selected.append((father, mother))
                 parents.add(father)
                 parents.add(mother)
-            else:
-                break
         return selected
 
     @staticmethod
@@ -180,6 +177,11 @@ class GA:
             decoded_value = self.decode(self.pop[index])
             self.fitness[index] = self.fitness_func(decoded_value)
             self.fitness_func_counter += 1
+        max_val = np.max(self.fitness)
+        max_val_idx = np.argmax(self.fitness)
+        if max_val > self.best_fitness:
+            self.best_fitness = max_val
+            self.best_solution = self.pop[max_val_idx].copy()
 
     def  elit_index(self):
         idx = np.argpartition(self.fitness, -self.elit)[-self.elit:]
@@ -337,7 +339,7 @@ class GA:
             # Create 3D plot for 2D problems
             fig = plt.figure(figsize=(14, 14))
             ax = fig.add_subplot(111, projection='3d')
-            ax.view_init(elev=15, azim=100)
+            ax.view_init(elev=110, azim=10)
             
             # Plot the fitness function surface
             x_range = np.linspace(self.range_low, self.range_high, 50)
@@ -364,6 +366,16 @@ class GA:
             plt.tight_layout()
             plt.savefig(filename, dpi=150)
             plt.close()
+
+            scatter_with_continuos_3d(decoded_pop[:, 0],
+                                      decoded_pop[:, 1],
+                                      fitness_values,
+                                      self.fitness_func,
+                                      limits=(self.range_low, self.range_high),
+                                      fun_name='W30 + W4',
+                                      title=f'W30 + W4 with Generation {self.generation}',
+                                      filename=f'{self.output_dir}generation_{self.generation:04d}.html',
+                                      color_map='plasma')
         else:
             fig, ax = plt.subplots(figsize=(10, 12))
             ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')

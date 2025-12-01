@@ -30,6 +30,7 @@ This project is licensed under the BSD 2-Clause License.
 * **`mbenchmark`**: Benchmark Functions for Optimization Tests.  
 * **`mdatetime`**: Utilities for advanced date and time manipulation.   
 * **`mga`**: Genetic Algorithm with verbose methods reporting in detail each step and operation.  
+* **`mps`**: Particle Swarm with verbose methods reporting in detail each step and operation.  
 
 ---
 ### [Outputs](outputs/README.md)

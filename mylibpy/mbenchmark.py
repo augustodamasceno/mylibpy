@@ -14,9 +14,11 @@ __copyright__ = "Copyright (c) 2023, Augusto Damasceno."
 __license__ = "BSD-2-Clause"
 
 import numpy as np
-from matplotlib import pyplot as plt
-#from mpl_toolkits.mplot3d import Axes3D
-import plotly.graph_objects as go
+
+try:
+    from mplot import scatter_with_continuos_3d
+except:
+    from .mplot import scatter_with_continuos_3d
 
 
 space_search_grid = np.arange(-500, 505, 5)
@@ -158,64 +160,19 @@ def w30_add_w4(input):
 
 if __name__ == "__main__":
     print('Plotting W30 + W4')
-    
-    # Generate random points
-    np.random.seed(42)  # For reproducibility
+
+    np.random.seed(42) 
     n_points = 50
     random_x = np.random.uniform(-500, 500, n_points)
     random_y = np.random.uniform(-500, 500, n_points)
-    
-    # Calculate z values for random points using w30_add_w4
     random_z = np.array([w30_add_w4([rx, ry]) for rx, ry in zip(random_x, random_y)])
+    scatter_with_continuos_3d(random_x,
+                              random_y,
+                              random_z,
+                              w30_add_w4,
+                              limits=(-500, 500),
+                              fun_name='W30 + W4',
+                              title='Scatter 3D with Continuous Surface',
+                              filename='../outputs/benchmark-w30w4.html',
+                              color_map='plasma')
     
-    # Matplotlib plot
-    fig = plt.figure(figsize=(10, 7))
-    ax = fig.add_subplot(111, projection='3d')
-    surf = ax.plot_surface(x, y, w30+w4, cmap='plasma', alpha=0.7)
-    
-    # Add random points
-    ax.scatter(random_x, random_y, random_z, c='red', marker='o', s=50, label='Random Points')
-    
-    ax.set_xlabel('X axis')
-    ax.set_ylabel('Y axis')
-    ax.set_zlabel('w30+w4')
-    ax.set_title('W30 + W4 with Random Points')
-    ax.legend()
-    fig.colorbar(surf, shrink=0.5, aspect=5, label='W30 + W4 value')
-    plt.show()
-
-    print('Saving an interactive plot in ../outputs/benchmark-w30w4.html')
-    surface = go.Surface(
-        x=x,
-        y=y,
-        z=w30+w4,
-        colorscale='plasma',
-        opacity=0.7
-    )
-    
-    # Add random points to plotly
-    scatter = go.Scatter3d(
-        x=random_x,
-        y=random_y,
-        z=random_z,
-        mode='markers',
-        marker=dict(
-            size=6,
-            color='red',
-            symbol='circle'
-        ),
-        name='Random Points'
-    )
-    
-    fig = go.Figure(data=[surface, scatter])
-    fig.update_layout(
-        title='3D Surface Plot of W30 + W4 with Random Points',
-        scene=dict(
-            xaxis_title='X Axis',
-            yaxis_title='Y Axis',
-            zaxis_title='w30+w4'
-        ),
-        margin=dict(l=40, r=40, b=40, t=80)
-    )
-    output_filename = '../outputs/benchmark-w30w4.html'
-    fig.write_html(output_filename)
