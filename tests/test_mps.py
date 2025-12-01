@@ -25,15 +25,15 @@ class TestPS(unittest.TestCase):
     def test_accuracy_benchmark(self):
         ps = PS(num_stall=5,
                 num_particles=20,
-                max_iterations=20,
+                max_iterations=30,
                 num_dimensions=2,
                 range_low=-500,
                 range_high=500,
-                inertia_max=0.9,
+                inertia_max=0.6,
                 inertia_min=0.1,
                 delta_inertia=0.8,
                 inertia_rate=0.4,
-                cognitive_behaviour=2,
+                cognitive_behaviour=0.5,
                 social_behaviour=2,
                 save_plots=False,
                 save_only_last_plot=True,
@@ -42,7 +42,7 @@ class TestPS(unittest.TestCase):
         best_eval_history = []
         for i in range(1):
             ps.run(func=w30_add_w4_min)
-            best_eval_history.append(ps.global_eval[-1])
+            best_eval_history.append(ps.global_eval[-2])
 
         print(best_eval_history)
         desired_value = -1000

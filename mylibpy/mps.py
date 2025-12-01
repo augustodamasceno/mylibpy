@@ -89,7 +89,7 @@ class PS:
         r1 = np.random.random()
         r2 = np.random.random()
         cognitive = self.cognitive_behaviour * r1 * (self.personal_best[self.iteration] - self.position[self.iteration])
-        social = self.social_behaviour * r2 * (self.global_best - self.position[self.iteration])
+        social = self.social_behaviour * r2 * (self.global_best[self.iteration] - self.position[self.iteration])
         self.velocity = current_inertia * cognitive + social
 
     def update_position(self):
@@ -106,10 +106,10 @@ class PS:
             if self.iteration == 0:
                 self.personal_best[self.iteration, particle] = particle_position
             else:
-                if particle_eval > self.personal_eval[self.iteration-1, particle]:
+                if particle_eval > np.max(self.personal_eval[0:self.iteration, particle]):
                     self.personal_best[self.iteration, particle] = particle_position
                 else:
-                    self.personal_best[self.iteration, particle] = self.personal_eval[self.iteration-1, particle]
+                    self.personal_best[self.iteration, particle] = self.personal_best[self.iteration-1, particle]
             if particle_eval > max_global_eval:
                 max_global_eval = particle_eval
         self.global_eval[self.iteration] = max_global_eval
@@ -148,8 +148,7 @@ class PS:
             
             ax.plot_surface(X, Y, Z, cmap='plasma', alpha=0.6, edgecolor='none')
 
-            fitness_values = np.array([self.func(val) for val in self.position[-1]])
-            ax.scatter(self.personal_eval[:, 0], self.personal_eval[:, 1], fitness_values, 
+            ax.scatter(self.position[-1, :, 0], self.position[-1, :, 1] , self.personal_eval[-1],
                       c='red', s=100, alpha=0.8, label='Particles', edgecolors='black', linewidths=1)
             
             ax.set_xlabel('X')
@@ -164,7 +163,7 @@ class PS:
 
             scatter_with_continuos_3d(self.position[-1, :, 0],
                                       self.position[-1, :, 1],
-                                      fitness_values,
+                                      self.personal_eval[-1],
                                       self.func,
                                       limits=(self.range_low, self.range_high),
                                       fun_name='W30 + W4',
@@ -185,7 +184,7 @@ class PS:
             plt.close()
 
     def is_stop_criteria_reached(self):
-        return self.iteration >= self.max_iterations - 1
+        return self.iteration >= self.max_iterations -1
 
     def run(self, func):
         if inspect.isfunction(func):
@@ -196,6 +195,7 @@ class PS:
 
         self.init()
         self.run_start_time = time.perf_counter()
+        self.iteration = 0
         while not self.is_stop_criteria_reached():
             self.update_best()
             self.update_velocity()
