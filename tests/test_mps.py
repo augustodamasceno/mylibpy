@@ -29,19 +29,19 @@ class TestPS(unittest.TestCase):
                 num_dimensions=2,
                 range_low=-500,
                 range_high=500,
-                inertia_max=0.6,
+                inertia_max=0.9,
                 inertia_min=0.1,
                 delta_inertia=0.8,
                 inertia_rate=0.4,
-                cognitive_behaviour=0.5,
+                cognitive_behaviour=3.0,
                 social_behaviour=2.0,
                 save_plots=False,
-                save_only_last_plot=True,
-                plot_interactive=True,
+                save_only_last_plot=False,
+                plot_interactive=False,
                 output_dir="outputs/ps-plots/benchmark/")
 
         best_eval_history = []
-        for i in range(1):
+        for i in range(50):
             ps.run(func=w30_add_w4_min)
             best_eval_history.append(ps.global_eval[-2])
 

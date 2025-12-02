@@ -98,7 +98,7 @@ class TestGA(unittest.TestCase):
                 output_dir="outputs/ga-plots/benchmark/")
 
         best_fitness_history = []
-        for i in range(1):
+        for i in range(50):
             ga.run(fitness_func=w30_add_w4_min)
             best_fitness_history.append(ga.best_fitness)
 
