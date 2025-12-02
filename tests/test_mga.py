@@ -94,7 +94,6 @@ class TestGA(unittest.TestCase):
                 verbose=False,
                 save_plots=False,
                 save_only_last_plot=False,
-                plot_interactive=False,
                 output_dir="outputs/ga-plots/benchmark/")
 
         best_fitness_history = []
