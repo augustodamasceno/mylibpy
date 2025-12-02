@@ -35,6 +35,7 @@ class PS:
     def __init__(self, **kwargs):
         self.verbose = False
         self.num_stall = 5
+        self.acc_error = 10**-1
         self.num_particles = 20
         self.max_iterations = 20
         self.num_dimensions = 1
@@ -61,6 +62,7 @@ class PS:
         self.save_plots = False
         self.output_dir = "."
         self.save_only_last_plot = False
+        self.plot_interactive = False
         for key, value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
@@ -145,7 +147,7 @@ class PS:
         elif self.num_dimensions == 2:
             fig = plt.figure(figsize=(14, 14))
             ax = fig.add_subplot(111, projection='3d')
-            ax.view_init(elev=110, azim=10)
+            ax.view_init(elev=100, azim=10)
             x_range = np.linspace(self.range_low, self.range_high, 50)
             y_range = np.linspace(self.range_low, self.range_high, 50)
             X, Y = np.meshgrid(x_range, y_range)
@@ -169,15 +171,16 @@ class PS:
             plt.savefig(filename, dpi=150)
             plt.close()
 
-            scatter_with_continuos_3d(self.position[self.iteration, :, 0],
-                                      self.position[self.iteration, :, 1],
-                                      self.personal_eval[self.iteration],
-                                      self.func,
-                                      limits=(self.range_low, self.range_high),
-                                      fun_name='W30 + W4',
-                                      title=f'W30 + W4 with Iteration {self.iteration}',
-                                      filename=f'{self.output_dir}iteration{self.iteration:04d}.html',
-                                      color_map='plasma')
+            if self.plot_interactive:
+                scatter_with_continuos_3d(self.position[self.iteration-1, :, 0],
+                                          self.position[self.iteration-1, :, 1],
+                                          self.personal_eval[self.iteration-1],
+                                          self.func,
+                                          limits=(self.range_low, self.range_high),
+                                          fun_name='W30 + W4',
+                                          title=f'W30 + W4 with Iteration {self.iteration-1}',
+                                          filename=f'{self.output_dir}iteration{self.iteration-1:04d}.html',
+                                          color_map='plasma')
         else:
             fig, ax = plt.subplots(figsize=(10, 12))
             ax.scatter(self.personal_eval[:, 0], self.personal_eval[:, 1], c='red', s=50, alpha=0.6, label='Particles')
@@ -191,8 +194,22 @@ class PS:
             plt.savefig(filename, dpi=150)
             plt.close()
 
+    def is_genetic_stall(self):
+        if self.iteration >= 2:
+            diff_best_median = np.abs(np.mean(self.personal_eval[self.iteration-1]) - self.global_eval[self.iteration-1])
+            if diff_best_median <= self.acc_error:
+                return True
+        diff = np.array(self.global_eval[1:]) - np.array(self.global_eval[0:-1])
+        if len(diff) >= self.num_stall-1:
+            stall_slice = diff[-self.num_stall:]
+            count_zeros = np.sum(stall_slice == 0)
+            if count_zeros == self.num_stall-1:
+                return True
+        return False
+
     def is_stop_criteria_reached(self):
-        return self.iteration >= self.max_iterations -1
+        return (self.iteration == self.max_iterations-1
+                or self.is_genetic_stall())
 
     def run(self, func):
         if inspect.isfunction(func):

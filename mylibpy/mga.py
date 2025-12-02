@@ -41,13 +41,14 @@ class GA:
         self.mutation_rate_end = 0.01
         self.mutation_type = 'uniform'
         self.genetic_stall = 5
+        self.acc_error = 10**-4
         self.max_generations = 20
         self.num_dimensions = 1
         self.range_low = -10
         self.range_high = 10
         self.range_interval = 20
         self.num_digits = 19
-        self.bin_max_val = 4294967295
+        self.bin_max_val = 524288
         self.selection_type = 'roulette'
         self.crossover_type = 'two'
         self.elit = 2
@@ -56,6 +57,7 @@ class GA:
         self.best_solution = None
         self.best_fitness = -np.inf
         self.best_fitness_history = []
+        self.last_fitness_median = np.nan
         self.run_start_time = None
         self.run_end_time = None
         self.fitness_func = None
@@ -64,6 +66,7 @@ class GA:
         self.save_plots = False
         self.output_dir = "."
         self.save_only_last_plot = False
+        self.plot_interactive = False
         for key, value in kwargs.items():
             if key in self.__dict__:
                 self.__dict__[key] = value
@@ -141,11 +144,11 @@ class GA:
                    or (mother, father) in selected
                    or father in parents
                    or mother in parents
-            ) and attempts < 30:
+            ) and attempts < 5:
                 father = GA.spin_wheel(slices_end)
                 mother = GA.spin_wheel(slices_end)
                 attempts += 1
-            if attempts < 30:
+            if attempts < 5:
                 selected.append((father, mother))
                 parents.add(father)
                 parents.add(mother)
@@ -177,6 +180,7 @@ class GA:
             decoded_value = self.decode(self.pop[index])
             self.fitness[index] = self.fitness_func(decoded_value)
             self.fitness_func_counter += 1
+        self.last_fitness_median = np.median(self.fitness)
         max_val = np.max(self.fitness)
         max_val_idx = np.argmax(self.fitness)
         if max_val > self.best_fitness:
@@ -303,6 +307,10 @@ class GA:
             return self.mutation(children)
 
     def is_genetic_stall(self):
+        if self.max_generations >= self.genetic_stall:
+            diff_best_median = np.abs(self.last_fitness_median - self.best_fitness)
+            if diff_best_median <= self.acc_error:
+                return True
         diff = np.array(self.best_fitness_history[1:]) - np.array(self.best_fitness_history[0:-1])
         if len(diff) >= self.genetic_stall-1:
             stall_slice = diff[-self.genetic_stall:]
@@ -366,16 +374,16 @@ class GA:
             plt.tight_layout()
             plt.savefig(filename, dpi=150)
             plt.close()
-
-            scatter_with_continuos_3d(decoded_pop[:, 0],
-                                      decoded_pop[:, 1],
-                                      fitness_values,
-                                      self.fitness_func,
-                                      limits=(self.range_low, self.range_high),
-                                      fun_name='W30 + W4',
-                                      title=f'W30 + W4 with Generation {self.generation}',
-                                      filename=f'{self.output_dir}generation_{self.generation:04d}.html',
-                                      color_map='plasma')
+            if self.plot_interactive:
+                scatter_with_continuos_3d(decoded_pop[:, 0],
+                                          decoded_pop[:, 1],
+                                          fitness_values,
+                                          self.fitness_func,
+                                          limits=(self.range_low, self.range_high),
+                                          fun_name='W30 + W4',
+                                          title=f'W30 + W4 with Generation {self.generation}',
+                                          filename=f'{self.output_dir}generation_{self.generation:04d}.html',
+                                          color_map='plasma')
         else:
             fig, ax = plt.subplots(figsize=(10, 12))
             ax.scatter(decoded_pop[:, 0], decoded_pop[:, 1], c='red', s=50, alpha=0.6, label='Population')
