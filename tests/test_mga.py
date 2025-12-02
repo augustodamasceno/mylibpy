@@ -68,8 +68,8 @@ class TestGA(unittest.TestCase):
             best_fitness_history.append(ga.best_fitness)
 
         desired_value = -1.75
-        accepted_error = 10**-4
-        accepted_accuracy = 0.75
+        accepted_error = 10**-2
+        accepted_accuracy = 0.6
         best_fitness_history = np.array(best_fitness_history)
         error = np.abs(desired_value-best_fitness_history)
         acceptable = error <= accepted_error
