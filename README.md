@@ -1,6 +1,6 @@
 <div align="center">
 
-# mylibpy
+# **mylibpy**
 
 *My personal Python programming library*
 
@@ -12,35 +12,46 @@
 
 ---
 
-### Contact
+## **Contact**
 
 * **Email:** [augustodamasceno@protonmail.com](mailto:augustodamasceno@protonmail.com)
 
 ---
 
-### License
+## **License**
 
 This project is licensed under the BSD 2-Clause License.
 
-<small>Copyright &copy; 2023-2025, Augusto Damasceno. All rights reserved.</small>
+<small>Copyright &copy; 2023-2026, Augusto Damasceno. All rights reserved.</small>
 
 ---
 
-### Core Modules
+## **Core Modules**
 * **`mbenchmark`**: Benchmark Functions for Optimization Tests.  
 * **`mdatetime`**: Utilities for advanced date and time manipulation.   
 * **`mga`**: Genetic Algorithm with verbose methods reporting in detail each step and operation.  
-* **`mps`**: Particle Swarm with verbose methods reporting in detail each step and operation.  
+* **`mps`**: Particle Swarm.  
 
 ---
-### [Outputs](outputs/README.md)
+## **Outputs**
+> Lib or tests generated files.    
+
+### Benchmark Function    
+![](outputs/samples/ga/complex/benchmark-w30w4.png)
+
+### GA as Script Simple Function Optimization    
+![](outputs/samples/ga/simple/ga-gen0.png) 
+![](outputs/samples/ga/simple/ga-gen10.png) 
+![](outputs/samples/ga/simple/ga-gen20.png) 
+
+
 
 ---
-### Related Projects
-* **[mylibc](https://github.com/augustodamasceno/mylibc)** - My personal C library.  
+## Other Projects
+* **[Knowledge Journal](https://github.com/augustodamasceno/knowledge-journal)**  
 
 ---
-### References
+## References
 1.  [Python Official Documentation](https://docs.python.org/3/)
 2.  [PEP 8 -- Style Guide for Python Code](https://www.python.org/dev/peps/pep-0008/)
 3.  [Python Downloads](https://www.python.org/downloads/)
